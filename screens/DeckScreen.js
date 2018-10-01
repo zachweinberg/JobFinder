@@ -3,10 +3,18 @@ import { View, Text, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import Swipe from '../components/Swipe';
 import { MapView } from 'expo';
-import { Card, Button } from 'react-native-elements';
+import { Card, Button, Icon } from 'react-native-elements';
 import * as actions from '../actions';
 
 class DeckScreen extends Component {
+
+  static navigationOptions = {
+    title: 'Jobs',
+    tabBarIcon: ({ tintColor }) => {
+      return <Icon name="description" size={26} color={tintColor}/>
+    },
+  };
+
 
   renderCard(job){
 
@@ -39,10 +47,16 @@ class DeckScreen extends Component {
     )
   }
 
-  renderNoMoreCards(){
+  renderNoMoreCards = () => {
     return (
       <Card title="No more jobs">
-
+        <Button
+          title="Back To Map"
+          large
+          icon={{ name: 'my-location' }}
+          backgroundColor="#03A9F4"
+          onPress={ () => this.props.navigation.navigate("Map")}
+        />
       </Card>
     )
   }
@@ -54,7 +68,7 @@ class DeckScreen extends Component {
           data={this.props.jobs}
           renderCard={this.renderCard}
           renderNoMoreCards={this.renderNoMoreCards}
-          keyProp="jobKey"
+          keyProp="jobkey"
           onSwipeRight={ job => this.props.likeJob(job) }
         />
       </View>

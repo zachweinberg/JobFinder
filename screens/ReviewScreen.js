@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, Platform, ScrollView, StyleSheet } from 'react-native';
-import { Button } from 'react-native-elements';
+import {
+  View,
+  Text,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Linking,
+} from 'react-native';
+import { MapView } from 'expo';
+import { Button, Card, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 class ReviewScreen extends Component {
@@ -23,14 +31,34 @@ class ReviewScreen extends Component {
   }
 
   renderLikedJobs = () => {
+
     return this.props.likedJobs.map(job => {
+
+      const initialRegion = {
+        longitude: job.longitude,
+        latitude: job.latitude,
+        longitudeDelta: 0.02,
+        latitudeDelta: 0.045
+      };
+
       return (
-        <Card>
+        <Card title={job.jobTitle} key={job.jobkey}>
           <View style={{ height: 200 }}>
+            <MapView
+              style={{ flex: 1 }}
+              cacheEnabled={true}
+              scrollEnabled={false}
+              initialRegion={initialRegion}
+            />
             <View style={styles.detailWrapper}>
-              <Text>{job.company}</Text>
-              <Text>{job.formattedRelativeTime}</Text>
+              <Text style={styles.italics}>{job.company}</Text>
+              <Text style={styles.italics}>{job.formattedRelativeTime}</Text>
             </View>
+            <Button
+              title="Apply Now!"
+              backgroundColor="#03A9F4"
+              onPress={ () => Linking.openURL(job.url) }
+            />
           </View>
         </Card>
       );
@@ -48,9 +76,13 @@ class ReviewScreen extends Component {
 
 const styles = StyleSheet.create({
   detailWrapper: {
+    marginTop: 10,
     marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-around'
+  },
+  italics: {
+    fontStyle: 'italic'
   }
 })
 
